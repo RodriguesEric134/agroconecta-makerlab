@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "author": "AgroConecta - Eric Rodrigues, Renato Ichikawa, Bernardo Rocha",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-dht22", "id": "dht1", "top": -230, "left": -180, "attrs": { "temperature": "24", "humidity": "60" } },
+    { "type": "wokwi-hc-sr04", "id": "us1", "top": -220, "left": 40, "attrs": { "distance": "200" } },
+    { "type": "wokwi-photoresistor-sensor", "id": "ldr1", "top": 40, "left": -400, "attrs": {} },
+    { "type": "wokwi-slide-potentiometer", "id": "solo1", "top": 150, "left": -420, "rotate": 0, "attrs": { "travelLength": "30" } },
+    { "type": "wokwi-servo", "id": "servo1", "top": -230, "left": 300, "attrs": {} },
+    { "type": "wokwi-rgb-led", "id": "rgb1", "top": 20, "left": 300, "attrs": { "common": "cathode" } },
+    { "type": "wokwi-resistor", "id": "r1", "top": 110, "left": 230, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-resistor", "id": "r2", "top": 110, "left": 260, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-resistor", "id": "r3", "top": 110, "left": 290, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-buzzer", "id": "bz1", "top": 40, "left": 420, "attrs": { "volume": "0.2" } },
+    { "type": "board-ssd1306", "id": "oled1", "top": 300, "left": -60, "attrs": { "i2cAddress": "0x3c" } },
+    { "type": "wokwi-pushbutton", "id": "btnWifi", "top": 300, "left": 200, "attrs": { "color": "blue", "label": "WI-FI ON/OFF" } },
+    { "type": "wokwi-pushbutton", "id": "btnFalha", "top": 370, "left": 200, "attrs": { "color": "red", "label": "FALHA SENSOR" } },
+    { "type": "wokwi-a4988", "id": "drvEsq", "top": 230, "left": 420, "attrs": {} },
+    { "type": "wokwi-a4988", "id": "drvDir", "top": 230, "left": 560, "attrs": {} },
+    { "type": "wokwi-stepper-motor", "id": "rodaEsq", "top": 330, "left": 400, "attrs": { "size": "17" } },
+    { "type": "wokwi-stepper-motor", "id": "rodaDir", "top": 330, "left": 560, "attrs": { "size": "17" } }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+
+    [ "dht1:VCC", "esp:3V3", "red", [] ],
+    [ "dht1:GND", "esp:GND.2", "black", [] ],
+    [ "dht1:SDA", "esp:15", "green", [] ],
+
+    [ "us1:VCC", "esp:5V", "red", [] ],
+    [ "us1:GND", "esp:GND.2", "black", [] ],
+    [ "us1:TRIG", "esp:5", "orange", [] ],
+    [ "us1:ECHO", "esp:18", "purple", [] ],
+
+    [ "ldr1:VCC", "esp:3V3", "red", [] ],
+    [ "ldr1:GND", "esp:GND.1", "black", [] ],
+    [ "ldr1:AO", "esp:34", "yellow", [] ],
+
+    [ "solo1:VCC", "esp:3V3", "red", [] ],
+    [ "solo1:GND", "esp:GND.1", "black", [] ],
+    [ "solo1:SIG", "esp:35", "brown", [] ],
+
+    [ "servo1:V+", "esp:5V", "red", [] ],
+    [ "servo1:GND", "esp:GND.2", "black", [] ],
+    [ "servo1:PWM", "esp:13", "blue", [] ],
+
+    [ "esp:25", "r1:1", "red", [] ],
+    [ "r1:2", "rgb1:R", "red", [] ],
+    [ "esp:26", "r2:1", "green", [] ],
+    [ "r2:2", "rgb1:G", "green", [] ],
+    [ "esp:27", "r3:1", "blue", [] ],
+    [ "r3:2", "rgb1:B", "blue", [] ],
+    [ "rgb1:COM", "esp:GND.3", "black", [] ],
+
+    [ "bz1:1", "esp:GND.3", "black", [] ],
+    [ "bz1:2", "esp:14", "orange", [] ],
+
+    [ "oled1:VCC", "esp:3V3", "red", [] ],
+    [ "oled1:GND", "esp:GND.1", "black", [] ],
+    [ "oled1:SDA", "esp:21", "cyan", [] ],
+    [ "oled1:SCL", "esp:22", "magenta", [] ],
+
+    [ "btnWifi:1.l", "esp:4", "blue", [] ],
+    [ "btnWifi:2.l", "esp:GND.3", "black", [] ],
+    [ "btnFalha:1.l", "esp:19", "red", [] ],
+    [ "btnFalha:2.l", "esp:GND.3", "black", [] ],
+
+    [ "drvEsq:STEP", "esp:32", "green", [] ],
+    [ "drvEsq:DIR", "esp:33", "white", [] ],
+    [ "drvEsq:SLEEP", "drvEsq:RESET", "green", [] ],
+    [ "drvEsq:1B", "rodaEsq:B-", "black", [] ],
+    [ "drvEsq:1A", "rodaEsq:B+", "green", [] ],
+    [ "drvEsq:2A", "rodaEsq:A+", "blue", [] ],
+    [ "drvEsq:2B", "rodaEsq:A-", "red", [] ],
+
+    [ "drvDir:STEP", "esp:16", "green", [] ],
+    [ "drvDir:DIR", "esp:17", "white", [] ],
+    [ "drvDir:SLEEP", "drvDir:RESET", "green", [] ],
+    [ "drvDir:1B", "rodaDir:B-", "black", [] ],
+    [ "drvDir:1A", "rodaDir:B+", "green", [] ],
+    [ "drvDir:2A", "rodaDir:A+", "blue", [] ],
+    [ "drvDir:2B", "rodaDir:A-", "red", [] ]
+  ],
+  "dependencies": {}
+}
