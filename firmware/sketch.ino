@@ -88,7 +88,13 @@ bool online = false;
 uint32_t ultimaLeituraMs = 0, ultimoEnvioMs = 0, ultimoBipMs = 0;
 
 // ----------------------------------------------------------------- utilidades
-void led(bool r, bool g, bool b) { digitalWrite(PIN_LED_R, r); digitalWrite(PIN_LED_G, g); digitalWrite(PIN_LED_B, b); }
+void led(bool r, bool g, bool b) {
+  static int ultimo = -1;                 // só escreve nos pinos quando a cor muda
+  int cor = (r << 2) | (g << 1) | b;
+  if (cor == ultimo) return;
+  ultimo = cor;
+  digitalWrite(PIN_LED_R, r); digitalWrite(PIN_LED_G, g); digitalWrite(PIN_LED_B, b);
+}
 
 void bip(int freq, int ms) { tone(PIN_BUZZER, freq, ms); }
 
@@ -363,4 +369,5 @@ void loop() {
     desenharTela();
   }
   sinalizar();
+  delay(1);   // libera a CPU (o passo dos motores é de 1,8–2,5 ms, então 1 ms não atrapalha)
 }

@@ -17,7 +17,7 @@
 | | |
 |---|---|
 | ▶️ **Vídeo demonstrativo** (até 6 min) | _a preencher_ |
-| 🧪 **Simulação no Wokwi** | _a preencher_ |
+| 🧪 **Simulação no Wokwi** | <https://wokwi.com/projects/481088112604618753> |
 | 🗂️ Plataforma AgroConecta | [Big Data](https://github.com/RodriguesEric134/agroconecta-bigdata) · [RPA](https://github.com/RodriguesEric134/agroconecta-rpa) |
 
 ---
