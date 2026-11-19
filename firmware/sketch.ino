@@ -276,8 +276,12 @@ void tarefaRede(void*) {
         JsonDocument resp;
         if (!deserializeJson(resp, http.getString())) {
           xSemaphoreTake(trava, portMAX_DELAY);
-          recomendacao = resp["recomendacao"] | "Sem recomendacao";
-          fonteIA = resp["fonte"] | "-";
+          String nova = resp["recomendacao"] | "Sem recomendacao";
+          // heartbeat sem mudança ("Situacao mantida") não apaga a última recomendação da IA na tela
+          if (nova != "Situacao mantida") {
+            recomendacao = nova;
+            fonteIA = resp["fonte"] | "-";
+          }
           xSemaphoreGive(trava);
         }
         Serial.printf("[NUVEM] Telemetria enviada. IA (%s): %s\n", fonteIA.c_str(), recomendacao.c_str());
