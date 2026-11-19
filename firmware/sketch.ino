@@ -253,7 +253,10 @@ void tarefaRede(void*) {
   for (;;) {
     if (wifiHabilitado && WiFi.status() != WL_CONNECTED) {
       WiFi.begin(WIFI_SSID, WIFI_SENHA, 6);
-      for (int i = 0; i < 20 && WiFi.status() != WL_CONNECTED; i++) vTaskDelay(pdMS_TO_TICKS(250));
+      Serial.println("[REDE] Conectando ao Wi-Fi Wokwi-GUEST...");
+      for (int i = 0; i < 40 && WiFi.status() != WL_CONNECTED; i++) vTaskDelay(pdMS_TO_TICKS(250));
+      if (WiFi.status() == WL_CONNECTED) Serial.printf("[REDE] Wi-Fi conectado, IP %s\n", WiFi.localIP().toString().c_str());
+      else Serial.println("[REDE] Wi-Fi indisponivel, nova tentativa em seguida.");
     }
     online = wifiHabilitado && WiFi.status() == WL_CONNECTED;
 
@@ -267,6 +270,7 @@ void tarefaRede(void*) {
       http.setTimeout(15000);
       http.begin(cliente, URL_N8N);
       http.addHeader("Content-Type", "application/json");
+      Serial.println("[REDE] Enviando telemetria ao n8n (HTTPS)...");
       int codigo = http.POST(corpo);
       if (codigo == 200) {
         JsonDocument resp;
