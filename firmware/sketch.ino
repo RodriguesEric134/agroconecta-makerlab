@@ -342,7 +342,10 @@ void setup() {
   if (!oled.begin(SSD1306_SWITCHCAPVCC, 0x3C)) Serial.println("[ERRO] OLED nao encontrado");
   trava = xSemaphoreCreateMutex();
   WiFi.mode(WIFI_STA);
-  xTaskCreatePinnedToCore(tarefaRede, "rede", 8192, nullptr, 1, nullptr, 0);
+  // O handshake TLS (HTTPS) leva vários segundos de CPU sem ceder o núcleo 0; sem isto o watchdog
+  // do núcleo 0 reinicia o ESP32 no meio do envio. O loop de controle (núcleo 1) segue protegido.
+  disableCore0WDT();
+  xTaskCreatePinnedToCore(tarefaRede, "rede", 12288, nullptr, 1, nullptr, 0);
   led(false, true, false);
   bip(1000, 150);
   Serial.println("[ROBO] AgroConecta Robo de Campo iniciado. Modelo TinyML carregado.");
