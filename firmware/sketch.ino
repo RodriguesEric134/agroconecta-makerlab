@@ -78,7 +78,7 @@ int etapaDesvio = 0;
 bool wifiHabilitado = true, falhaSimulada = false;
 int ultimoBtnWifi = HIGH, ultimoBtnFalha = HIGH;
 
-// rede (tarefa no núcleo 0 para não travar o robô)
+// rede (tarefa FreeRTOS separada para não travar o robô)
 SemaphoreHandle_t trava;
 String payloadPendente = "";
 String recomendacao = "Aguardando IA...";
@@ -342,10 +342,10 @@ void setup() {
   if (!oled.begin(SSD1306_SWITCHCAPVCC, 0x3C)) Serial.println("[ERRO] OLED nao encontrado");
   trava = xSemaphoreCreateMutex();
   WiFi.mode(WIFI_STA);
-  // O handshake TLS (HTTPS) leva vários segundos de CPU sem ceder o núcleo 0; sem isto o watchdog
-  // do núcleo 0 reinicia o ESP32 no meio do envio. O loop de controle (núcleo 1) segue protegido.
-  disableCore0WDT();
-  xTaskCreatePinnedToCore(tarefaRede, "rede", 12288, nullptr, 1, nullptr, 0);
+  // O handshake TLS (HTTPS) ocupa a CPU por vários segundos. No núcleo 0 isso dispara o watchdog
+  // da tarefa ociosa e reinicia o ESP32; no núcleo 1 a tarefa divide o tempo com o loop (mesma
+  // prioridade, fatias de 1 ms) e o controle do robô continua respondendo durante o envio.
+  xTaskCreatePinnedToCore(tarefaRede, "rede", 12288, nullptr, 1, nullptr, 1);
   led(false, true, false);
   bip(1000, 150);
   Serial.println("[ROBO] AgroConecta Robo de Campo iniciado. Modelo TinyML carregado.");

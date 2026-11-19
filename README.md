@@ -51,7 +51,7 @@ que está acontecendo.
                         │      ▼                       ▼                                   │
                         │ desvio de obstáculo   AÇÃO AUTÔNOMA: irrigar / parar / alertar   │──► motores, servo,
                         │                              │                                   │    LED, buzzer, OLED
-                        │      tarefa de rede (núcleo 0, não trava o robô)                 │
+                        │      tarefa de rede (FreeRTOS, não trava o robô)                 │
                         └──────────────┬───────────────▲───────────────────────────────────┘
                      telemetria (JSON) │               │ recomendação curta → OLED
                                        ▼               │
